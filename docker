@@ -1,0 +1,4 @@
+docker run -ti --rm --name cqhttp-test -v $(pwd)/coolq:/home/user/coolq
+             -p 9000:9000 -p 5700:5700 -e COOLQ_ACCOUNT=2984254611
+             -e CQHTTP_POST_URL=http://127.0.0.1:5599
+             -e CQHTTP_SERVE_DATA_FILES=yes richardchien/cqhttp:latest
