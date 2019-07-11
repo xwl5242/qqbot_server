@@ -12,6 +12,11 @@ bot = CQHttp(api_root='http://127.0.0.1:5700',
 
 
 def bd_short_url(long_url):
+    """
+    百度短地址接口调用
+    :param long_url: 要转换为短地址的长地址
+    :return:
+    """
     data = {'url': long_url}
     headers = {'Content-Type': 'application/json', 'Token': config.BD_SU_TOKEN}
     r = requests.post(url=config.BD_SU_URL, headers=headers, data=json.dumps(data))
@@ -19,7 +24,24 @@ def bd_short_url(long_url):
 
 
 def sina_short_url(long_url):
+    """
+    新浪短地址接口调用
+    :param long_url: 要转换为短地址的长地址
+    :return:
+    """
     r = requests.get(f'{config.SINA_URL}?appkey={config.SINA_KEY}&long_url={long_url}')
+    return json.loads(r.text)
+
+
+def weather(city):
+    """
+    天气查询接口的调用，目前只支持根据城市名称查询
+    :param city: 城市名称
+    :return:
+    """
+    if city:
+        url = config.WEATHER_URL+'?version=v1&city='+city
+        r = requests.get(url=url,)
     return json.loads(r.text)
 
 
@@ -27,7 +49,13 @@ def at_msg(user_id, msg):
     return f'[CQ:at,qq={user_id}]\n\n{msg}'
 
 
-def search_tv(kw):
+def search_tv(kw, **kwargs):
+    """
+    电影查询功能
+    :param kw: 关键字 电影名字
+    :param kwargs:
+    :return:
+    """
     sec = config.SECRET
     kw_b = str(kw).encode('utf-8')
     sec = sec.encode('utf-8') if isinstance(sec, str) else sec
@@ -43,19 +71,63 @@ def search_tv(kw):
     return msg
 
 
-def search_weather(kw):
-    return '天气搜索测试回复'
+def search_weather(kw, **kwargs):
+    """
+    天气查询
+    :param kw: 城市
+    :param kwargs: 其他信息
+    :return:
+    """
+    msg = None
+    area = kwargs.get('area')
+    city = area if (not kw and area) else kw
+    city = str(city).replace('市区', '').replace('市', '')
+    out = ['省', '区', '乡', '村', '国', '镇']
+    if len([o for o in out if o in city]) > 0 or len(city) > 5:
+        msg = '温馨提示：天气查询时只输入具体城市名称即可查询，如：北京/郑州/正定/磁县/雄县'
+    else:
+        weather_json = weather(city)
+        if weather_json:
+            msg = ''
+            city = weather_json.get('city')
+            msg = f'{msg}所在城市：{city}\n\n'
+            day3 = weather_json.get('data')[0:3]
+            for i, day in enumerate(day3):
+                msg = f"{msg}{day.get('day')}\t{day.get('week')}\n天气：{day.get('wea')}\n"
+                if i == 0:
+                    msg = f"{msg}空气质量：{day.get('air_level')}\n{day.get('air_tips')}\n"
+                zwx = day.get('index')[0]
+                msg = f"{msg}{zwx.get('title')}：{zwx.get('level')}\n{zwx.get('desc')}\n\n"
+            msg = f"{msg}\n开启美好生活·趣无止境"
+    return msg
 
 
 @bot.on_message()
 def handle_msg(context):
+    """
+    群回复功能
+    具体功能在config.ini中的GROUP_FUNC section下配置
+    group_msg_keyword为可处理的关键字
+    group_msg_kw_func要处理的关键字所对应的处理函数
+    :param context:
+    :return:
+    """
     user_id, message = context['user_id'], str(context['message'])
     if message:
+        reply = ''
         for kw in config.GROUP_MSG_REPLY_KW:
             if message.startswith(kw):
-                print(message)
-                reply = eval(config.GROUP_MSG_REPLY_KW_FUNC.get(kw))(message.replace(kw, '').strip())
-                return {'reply': '\n\n'+reply, 'at_sender': True}
+                to_func = config.GROUP_MSG_REPLY_KW_FUNC.get(kw)
+                real_kw = message.replace(kw, '').strip()
+                area = context['sender']['area']
+                if not real_kw:
+                    if 'search_weather' == to_func:
+                        if area:
+                            reply = eval(to_func)(real_kw, area=area)
+                else:
+                    reply = eval(to_func)(real_kw)
+                if reply:
+                    return {'reply': '\n\n'+reply, 'at_sender': True}
 
 
 @bot.on_notice('group_increase', 'group_decrease')
@@ -88,7 +160,5 @@ def handle_group_increase_decrease(context):
 
 bot.run(host='127.0.0.1', port=5599, debug=False)
 
-if __name__ == '__main__':
-    print(bd_short_url('http://www.yoviptv.com/t-t/k=1'))
 
 

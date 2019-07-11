@@ -29,3 +29,5 @@ BD_SU_TOKEN = str(cp.get('SHORT_URL', 'bd_token'))
 SINA_URL = str(cp.get('SHORT_URL', 'sina_url'))
 SINA_KEY = str(cp.get('SHORT_URL', 'sina_appkey'))
 
+# 天气预报接口url
+WEATHER_URL = str(cp.get('WEATHER', 'weather_url'))
