@@ -15,6 +15,9 @@ IN_GROUP_MSG = str(cp.get('GROUP_EVENT_MSG', 'in_group_msg')).replace(r'\n', '\n
 LEAVE_GROUP_MSG = str(cp.get('GROUP_EVENT_MSG', 'leave_group_msg'))
 KICK_GROUP_MSG = str(cp.get('GROUP_EVENT_MSG', 'kick_group_msg'))
 
+# 视频查询接口地址
+TV_SEARCH_URL = str(cp.get('TV_SEARCH_URL', 'tv_search_url'))
+
 # group，群组支持的关键字回复列表
 GROUP_MSG_REPLY_KW = str(cp.get('GROUP_FUNC', 'group_msg_keyword')).split(',')
 GROUP_MSG_REPLY_KW_FUNC = {}

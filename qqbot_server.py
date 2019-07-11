@@ -60,7 +60,7 @@ def search_tv(kw, **kwargs):
     kw_b = str(kw).encode('utf-8')
     sec = sec.encode('utf-8') if isinstance(sec, str) else sec
     sig = hmac.new(sec, kw_b, 'sha1').hexdigest()
-    r = requests.post(f'http://127.0.0.1:9999/api/search_tv',
+    r = requests.post(url=config.TV_SEARCH_URL,
                       data=kw_b, headers={'X-Signature': sig})
     resp = json.loads(r.text)
     msg = f'很抱歉，没有找到 "{kw}" 相关的影视资源。\n获取更多，你也可以移步优视频网：\nhttp://www.yoviptv.com\n\n开启美好生活·趣无止境'
