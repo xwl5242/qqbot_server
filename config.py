@@ -24,7 +24,12 @@ GROUP_MSG_REPLY_KW_FUNC = {}
 __msg_reply_kw_func = str(cp.get('GROUP_FUNC', 'group_msg_kw_func')).split(',')
 for kw_func in __msg_reply_kw_func:
     funcs = kw_func.split(':')
-    GROUP_MSG_REPLY_KW_FUNC[funcs[0]] = funcs[1]
+    if '@' in funcs[0]:
+        kws = str(funcs[0]).split('@')
+        for kw in kws:
+            GROUP_MSG_REPLY_KW_FUNC[kw] = funcs[1]
+    else:
+        GROUP_MSG_REPLY_KW_FUNC[funcs[0]] = funcs[1]
 
 # 百度短地址服务
 BD_SU_URL = str(cp.get('SHORT_URL', 'bd_url'))

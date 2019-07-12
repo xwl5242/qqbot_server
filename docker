@@ -1,3 +1,7 @@
-docker run --name=coolq -d -p 9000:9000 -p 5700:5700 -v /root/coolq:/home/user/coolq -e VNC_PASSWD=12345678 -e COOLQ_ACCOUNT=2984254611 coolq/wine-coolq
+docker pull he0119/coolqbot:latest
+docker run --name=coolq -d -p 9000:9000 -p 5700:5700 -v /home/coolq:/home/user/coolq -e VNC_PASSWD=xwl@5242 -e COOLQ_ACCOUNT=2984254611 he0119/coolqbot:latest
 
 # 教程网址：https://cqp.cc/t/34558
+
+
+

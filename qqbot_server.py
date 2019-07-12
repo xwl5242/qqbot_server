@@ -49,6 +49,24 @@ def at_msg(user_id, msg):
     return f'[CQ:at,qq={user_id}]\n\n{msg}'
 
 
+def search_earthquake(kw, **kwargs):
+    """
+    地震查询
+    :param kw:
+    :param kwargs:
+    :return:
+    """
+    import time
+    r = requests.get(url=f'http://news.ceic.ac.cn/ajax/google?rand={time.time()}')
+    eqs = json.loads(r.text)[::-1][:10]
+    msg = ''
+    if eqs and len(eqs) > 0:
+        for eq in eqs:
+            msg = f"{msg}{eq.get('LOCATION_C')}\n震级：{eq.get('M')}，\n时间：{eq.get('O_TIME')}\n\n"
+    msg = f"{msg}开启美好生活·趣无止境"
+    return msg
+
+
 def search_tv(kw, **kwargs):
     """
     电影查询功能
@@ -94,6 +112,7 @@ def search_weather(kw, **kwargs):
             day3 = weather_json.get('data')[0:3]
             for i, day in enumerate(day3):
                 msg = f"{msg}{day.get('day')}\t{day.get('week')}\n天气：{day.get('wea')}\n"
+                msg = f"{msg}气温：{day.get('tem2')} ~ {day.get('tem1')}\n"
                 if i == 0:
                     msg = f"{msg}空气质量：{day.get('air_level')}\n{day.get('air_tips')}\n"
                 zwx = day.get('index')[0]
@@ -124,6 +143,8 @@ def handle_msg(context):
                     if 'search_weather' == to_func:
                         if area:
                             reply = eval(to_func)(real_kw, area=area)
+                    else:
+                        reply = eval(to_func)(real_kw)
                 else:
                     reply = eval(to_func)(real_kw)
                 if reply:
@@ -163,6 +184,5 @@ app = bot.server_app
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5599, debug=False)
-
 
 
