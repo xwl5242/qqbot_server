@@ -1,7 +1,14 @@
-docker pull he0119/coolqbot:latest
-docker run --name=coolq -d -p 9000:9000 -p 5700:5700 -v /home/coolq:/home/user/coolq -e VNC_PASSWD=xwl@5242 -e COOLQ_ACCOUNT=2984254611 he0119/coolqbot:latest
+###coolq on docker
+docker install coolq/wine:
+    docker pull he0119/coolqbot:latest
+docker run coolq:
+    docker run --name=coolq -d -p 9000:9000 -p 5700:5700 -v /home/coolq:/home/user/coolq -e VNC_PASSWD=xwl@5242 -e COOLQ_ACCOUNT=2984254611 he0119/coolqbot:latest
+    VNC_PASSWD:VNC client login passwd
+    COOLQ_ACCOUNT:qqbot account
+FAQ:
+    修改配置文件后重载应用会提示错误
+    全部停用后，再逐一启动就好
 
-# 教程网址：https://cqp.cc/t/34558
 
 
 
