@@ -44,3 +44,6 @@ SINA_KEY = str(cp.get('SHORT_URL', 'sina_appkey'))
 
 # 天气预报接口url
 WEATHER_URL = str(cp.get('WEATHER', 'weather_url'))
+
+# 思知机器人
+SZBOT_URL = f"{str(cp.get('OWN_THINK', 'bot_req_url'))}?appid={cp.get('OWN_THINK', 'appid')}&"
