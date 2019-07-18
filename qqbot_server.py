@@ -138,6 +138,7 @@ def handle_msg(context):
             if message.startswith(kw):
                 to_func = config.GROUP_MSG_REPLY_KW_FUNC.get(kw)
                 real_kw = message.replace(kw, '').strip()
+                real_kw = real_kw.replace(' ', '')
                 area = context['sender']['area']
                 if not real_kw:
                     if 'search_weather' == to_func:
