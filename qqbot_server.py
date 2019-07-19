@@ -47,7 +47,11 @@ def handle_msg(context):
                             return {'reply': '\n\n'+reply, 'at_sender': True}
         elif m_type == 'private':
             # 直接开启闲聊
-            uid, reply = BDUnitBot.chat(user_id, message)
+            if message.startswith('电影'):
+                to_func = config.GROUP_MSG_REPLY_KW_FUNC.get('电影')
+                reply = api(to_func, kw=message.replace('电影', '').replace(' ', ''))
+            else:
+                uid, reply = BDUnitBot.chat(user_id, message)
             return {'reply': reply}
 
 
