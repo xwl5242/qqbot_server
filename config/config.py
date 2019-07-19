@@ -9,6 +9,7 @@ cp.read(os.path.dirname(os.path.abspath(__file__))+'/config.ini', encoding='utf-
 # access_token, secret
 ACCESS_TOKEN = cp.get('QQ_BOT', 'access_token')
 SECRET = cp.get('QQ_BOT', 'secret')
+CUR_QQ = cp.get('QQ_BOT', 'cur_qq')
 
 # msg：入群，退群自动回复
 IN_GROUP_MSG = str(cp.get('GROUP_EVENT_MSG', 'in_group_msg')).replace(r'\n', '\n')

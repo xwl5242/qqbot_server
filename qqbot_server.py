@@ -2,6 +2,8 @@
 
 from config import config
 from cqhttp import CQHttp
+from mbot.custom_bot import api
+from mbot.bd_unit_bot import BDUnitBot
 
 
 bot = CQHttp(api_root='http://127.0.0.1:5700',
@@ -22,25 +24,31 @@ def handle_msg(context):
     :param context:
     :return:
     """
-    user_id, message = context['user_id'], str(context['message'])
+    user_id, message, m_type = context['user_id'], str(context['message']), str(context['message_type'])
+    message = message.replace(' ', '')
     if message:
-        reply = ''
-        for kw in config.GROUP_MSG_REPLY_KW:
-            if message.startswith(kw):
-                to_func = config.GROUP_MSG_REPLY_KW_FUNC.get(kw)
-                real_kw = message.replace(kw, '').strip()
-                real_kw = real_kw.replace(' ', '')
-                area = context['sender']['area']
-                if not real_kw:
-                    if 'search_weather' == to_func:
-                        if area:
-                            reply = eval(to_func)(real_kw, area=area)
-                    else:
-                        reply = eval(to_func)(real_kw)
-                else:
-                    reply = eval(to_func)(real_kw)
-                if reply:
-                    return {'reply': '\n\n'+reply, 'at_sender': True}
+        if m_type == 'group' or m_type == 'discuss':
+            # 群组或讨论组，只有@机器人，才开始闲聊
+            if message.startswith(f"[CQ:at,qq={config.CUR_QQ}]"):
+                # 消息以@开头,闲聊
+                message = message.replace(f"[CQ:at,qq={config.CUR_QQ}]", '')
+                uid, reply = BDUnitBot.chat(user_id, message)
+                return {'reply': reply, 'at_sender': True}
+            else:
+                # 关键字回复
+                for kw in config.GROUP_MSG_REPLY_KW:
+                    if message.startswith(kw):
+                        to_func = config.GROUP_MSG_REPLY_KW_FUNC.get(kw)
+                        real_kw = message.replace(kw, '').strip()
+                        real_kw = real_kw.replace(' ', '')
+                        area = context['sender']['area']
+                        reply = api(to_func, kw=real_kw, area=area)
+                        if reply:
+                            return {'reply': '\n\n'+reply, 'at_sender': True}
+        elif m_type == 'private':
+            # 直接开启闲聊
+            uid, reply = BDUnitBot.chat(user_id, message)
+            return {'reply': reply}
 
 
 @bot.on_notice('group_increase', 'group_decrease')
@@ -75,6 +83,5 @@ app = bot.server_app
 
 
 if __name__ == '__main__':
-    pass
-    # app.run(host='127.0.0.1', port=5599, debug=False)
+    app.run(host='127.0.0.1', port=5599, debug=False)
 

@@ -2,6 +2,7 @@
 import uuid
 import time
 import json
+import random
 import requests
 from config import config
 from mredis.mredis import MRedis
@@ -106,9 +107,8 @@ class BDUnitBot:
                 if resp_list and len(resp_list) > 0:
                     action_list = list(resp_list[0]['action_list'])
                     if action_list and len(action_list) > 0:
-                        print(resp['session_id'])
                         MRedis.set_json(uid, {'session_id': resp['session_id'], 'last_chat_time': int(time.time())})
-                        reply_ = action_list[0].get('say')
+                        reply_ = random.choice(action_list).get('say')
                         return uid, reply_
         return uid, None
 
