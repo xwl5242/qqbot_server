@@ -1,10 +1,10 @@
 # -*- coding:utf-8 -*-
-
+import os
 import configparser
 
 
 cp = configparser.ConfigParser()
-cp.read('config.ini', encoding='utf-8')
+cp.read(os.path.dirname(os.path.abspath(__file__))+'/config.ini', encoding='utf-8')
 
 # access_token, secret
 ACCESS_TOKEN = cp.get('QQ_BOT', 'access_token')
@@ -45,5 +45,10 @@ SINA_KEY = str(cp.get('SHORT_URL', 'sina_appkey'))
 # 天气预报接口url
 WEATHER_URL = str(cp.get('WEATHER', 'weather_url'))
 
-# 思知机器人
-SZBOT_URL = f"{str(cp.get('OWN_THINK', 'bot_req_url'))}?appid={cp.get('OWN_THINK', 'appid')}&"
+# 百度机器人
+BOT_URL = str(cp.get('BOT', 'bot_url'))
+BOT_OAUTH = str(cp.get('BOT', 'oauth_url'))
+BOT_API_KEY = str(cp.get('BOT', 'apikey'))
+BOT_API_SECRET = str(cp.get('BOT', 'apisecret'))
+BOT_ID = str(cp.get('BOT', 'service_id'))
+
