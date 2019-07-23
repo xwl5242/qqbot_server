@@ -2,7 +2,7 @@
 docker install coolq/wine:
     docker pull he0119/coolqbot:latest
 docker run coolq:
-    docker run --name=coolq -d -p 9000:9000 -p 5700:5700 -v /home/coolq:/home/user/coolq -e VNC_PASSWD=xwl@5242 -e COOLQ_ACCOUNT=2984254611 he0119/coolqbot:latest
+    docker run --name=coolq -d -p 9000:9000 -p 5700:5700 -v /home/coolq:/home/user/coolq -e VNC_PASSWD=xwl@5242 -e COOLQ_ACCOUNT=2984254611 -e COOLQ_URL=https://dlsec.cqp.me/cqa-xiaoi coolq/wine-coolq
     VNC_PASSWD:VNC client login passwd
     COOLQ_ACCOUNT:qqbot account
 FAQ:

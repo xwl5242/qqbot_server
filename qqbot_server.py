@@ -29,22 +29,24 @@ def handle_msg(context):
     if message:
         if m_type == 'group' or m_type == 'discuss':
             # 群组或讨论组，只有@机器人，才开始闲聊
-            if message.startswith(f"[CQ:at,qq={config.CUR_QQ}]"):
-                # 消息以@开头,闲聊
-                message = message.replace(f"[CQ:at,qq={config.CUR_QQ}]", '')
-                uid, reply = BDUnitBot.chat(user_id, message)
-                return {'reply': reply, 'at_sender': True}
-            else:
-                # 关键字回复
-                for kw in config.GROUP_MSG_REPLY_KW:
-                    if message.startswith(kw):
-                        to_func = config.GROUP_MSG_REPLY_KW_FUNC.get(kw)
-                        real_kw = message.replace(kw, '').strip()
-                        real_kw = real_kw.replace(' ', '')
-                        area = context['sender']['area']
-                        reply = api(to_func, kw=real_kw, area=area)
-                        if reply:
-                            return {'reply': '\n\n'+reply, 'at_sender': True}
+            iskw = [kkww for kkww in ['搜', '电影', '天气', '地震', f"[CQ:at,qq={config.CUR_QQ}]"] if message.startswith(kkww)]
+            if len(iskw) != 0:
+                if message.startswith(f"[CQ:at,qq={config.CUR_QQ}]"):
+                    # 消息以@开头,闲聊
+                    message = message.replace(f"[CQ:at,qq={config.CUR_QQ}]", '')
+                    uid, reply = BDUnitBot.chat(user_id, message)
+                    return {'reply': reply, 'at_sender': True}
+                else:
+                    # 关键字回复
+                    for kw in config.GROUP_MSG_REPLY_KW:
+                        if message.startswith(kw):
+                            to_func = config.GROUP_MSG_REPLY_KW_FUNC.get(kw)
+                            real_kw = message.replace(kw, '').strip()
+                            real_kw = real_kw.replace(' ', '')
+                            area = context['sender']['area']
+                            reply = api(to_func, kw=real_kw, area=area)
+                            if reply:
+                                return {'reply': '\n\n'+reply, 'at_sender': True}
         elif m_type == 'private':
             # 直接开启闲聊
             if message.startswith('电影'):
@@ -88,4 +90,3 @@ app = bot.server_app
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5599, debug=False)
-

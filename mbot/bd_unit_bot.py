@@ -20,7 +20,7 @@ class BDUnitBot:
         :return:
         """
         # header
-        header = {'Content-Type': 'application/json;charset=UTF-8'}
+        header = {'Content-Type': 'application/json;charset=UTF-8', 'Connection': 'close'}
         # 请求参数
         data = {'grant_type': 'client_credentials',
                 'client_id': config.BOT_API_KEY,
@@ -112,3 +112,6 @@ class BDUnitBot:
                         return uid, reply_
         return uid, None
 
+
+if __name__ == '__main__':
+    print(BDUnitBot.access_token())
